@@ -4,7 +4,6 @@ A lightweight, vanilla JavaScript incremental game. Choose a top economy, build 
 
 ## Quick Start
 
-- Open `index.html` in a browser.
 - Pick a country (each has unique boosts).
 - Click "Develop" and buy Industries. Upgrades unlock as you progress.
 - The game autosaves every 10s. Use Settings to export/import or hard reset.
