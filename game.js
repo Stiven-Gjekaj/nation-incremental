@@ -126,6 +126,8 @@ const el = {
   dbgUnlockUpgrades: document.getElementById('dbgUnlockUpgrades'),
   dbgFast10s: document.getElementById('dbgFast10s'),
   debugInfo: document.getElementById('debugInfo'),
+  developFab: document.getElementById('developFab'),
+  clickPowerFab: document.getElementById('clickPowerFab'),
 };
 
 // -------------------- Core calcs --------------------
@@ -298,6 +300,7 @@ function updateHeader(){
   const gps = totalGps();
   el.gps.textContent = '$' + format(gps, 2) + '/s';
   el.clickPower.textContent = format(clickPower(), 2);
+  if (el.clickPowerFab) el.clickPowerFab.textContent = format(clickPower(), 2);
   const c = getCountry();
   el.countryName.textContent = c? c.name : 'No Country';
   el.countryFlag.textContent = c? '['+c.flag+']' : '[ ]';
@@ -335,7 +338,7 @@ function mergeLoad(data){
   const dt = Math.max(0, now() - (G.lastTick||now())); const sec = dt/1000;
   const gps = totalGps(); G.gdp += gps * sec; G.totalGained += gps * sec;
   // offline time advance
-  const yearsAdd = YEARS_PER_SECOND * sec; G.currentYear += yearsAdd; if (G.currentYear >= 2020){ G.currentYear = 2020; G.endGame=true; onEndGame(); }
+  const yearsAdd = YEARS_PER_SECOND * sec; G.currentYear += yearsAdd; if (G.currentYear >= 2070){ G.currentYear = 2070; G.endGame=true; onEndGame(); }
 }
 
 el.saveBtn.addEventListener('click', ()=>{ saveGame(); flash('Game saved.'); });
@@ -353,6 +356,11 @@ el.importBtn.addEventListener('click', ()=>{
 });
 // Develop click (manual income)
 document.getElementById('developBtn').addEventListener('click', ()=>{
+  const gain = clickPower();
+  G.gdp += gain; G.totalGained += gain; updateHeader(); saveSoon();
+});
+// Mobile floating develop
+el.developFab.addEventListener('click', ()=>{
   const gain = clickPower();
   G.gdp += gain; G.totalGained += gain; updateHeader(); saveSoon();
 });
@@ -386,9 +394,9 @@ function doPrestige(gain){
 }
 
 // -------------------- Time & Events --------------------
-const YEARS_PER_SECOND = 0.5; // 0.5 in-game years per real second
-function advanceTime(dt){ if (G.endGame) return; G.currentYear += YEARS_PER_SECOND * dt; if (G.currentYear >= 2020){ G.currentYear=2020; G.endGame=true; onEndGame(); } }
-function onEndGame(){ const gain = prestigeGain(); showEventBanner('Run Complete', `The year is 2020. You generated $${format(G.totalGained)} total GDP. You can prestige for ${gain} influence and play again.`, 0, true); }
+const YEARS_PER_SECOND = 0.05; // 0.05 in-game years per real second (5/100)
+function advanceTime(dt){ if (G.endGame) return; G.currentYear += YEARS_PER_SECOND * dt; if (G.currentYear >= 2070){ G.currentYear=2070; G.endGame=true; onEndGame(); } }
+function onEndGame(){ const gain = prestigeGain(); showEventBanner('Run Complete', `The year is 2070. You generated $${format(G.totalGained)} total GDP. You can prestige for ${gain} influence and play again.`, 0, true); }
 
 function scheduleNextEvent(){ const min=20000, max=40000; G.nextEventAt = now() + (min + Math.random()*(max-min)); }
 function handleEvents(){
@@ -406,7 +414,7 @@ el.eventPrestigeNow.addEventListener('click', ()=>{ if (!G.endGame) return; cons
 // -------------------- Debug --------------------
 el.debugToggle.addEventListener('change', ()=>{ G.debug = el.debugToggle.checked; el.debugTools.style.display = G.debug? 'flex':'none'; el.debugInfo.style.display = G.debug? 'block':'none'; saveSoon(); renderDebugInfo(); });
 el.dbgAddMoney.addEventListener('click', ()=>{ if(!G.debug) return; G.gdp += 1_000_000; G.totalGained += 1_000_000; updateHeader(); });
-el.dbgAdvanceYear.addEventListener('click', ()=>{ if(!G.debug) return; G.currentYear = Math.min(2020, G.currentYear+1); updateHeader(); });
+el.dbgAdvanceYear.addEventListener('click', ()=>{ if(!G.debug) return; G.currentYear = Math.min(2070, G.currentYear+1); updateHeader(); });
 el.dbgTriggerEvent.addEventListener('click', ()=>{ if(!G.debug) return; triggerEvent(EVENT_DEFS[Math.floor(Math.random()*EVENT_DEFS.length)]); });
 el.dbgUnlockUpgrades.addEventListener('click', ()=>{ if(!G.debug) return; for (const u of UPGRADE_DEFS){ if (!G.upgradesBought[u.id]){ u.buy(); G.upgradesBought[u.id]=true; } } renderUpgrades(); updateHeader(); });
 el.dbgFast10s.addEventListener('click', ()=>{ if(!G.debug) return; const s=10; const gps = totalGps(); G.gdp += gps*s; G.totalGained += gps*s; updateHeader(); });
@@ -427,3 +435,15 @@ const hadSave = loadGame(); if (!hadSave) el.countryModal.style.display='flex';
 renderAll();
 setInterval(loop, 100);
 setInterval(saveGame, 10000);
+
+// -------------------- Mobile detection --------------------
+(function setupMobile(){
+  try{
+    const ua = navigator.userAgent || '';
+    const isTouch = window.matchMedia && (matchMedia('(pointer: coarse)').matches || matchMedia('(hover: none)').matches);
+    const isSmall = window.innerWidth <= 820;
+    const isMobileUA = /(Android|iPhone|iPad|iPod|Mobile|Windows Phone)/i.test(ua);
+    const isMobile = isTouch || isSmall || isMobileUA;
+    if (isMobile) document.body.classList.add('is-mobile');
+  }catch{}
+})();
