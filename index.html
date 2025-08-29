@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nation Incremental</title>
+    <meta name="description" content="Choose a nation and grow GDP through industries, upgrades, prestige, and strategy." />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container bar">
+        <div class="brand">Nation Incremental</div>
+        <div class="stats">
+          <div class="pill"><span id="countryFlag">[ ]</span> <span id="countryName">No Country</span></div>
+          <div class="pill">GDP: <span id="gdp">$0</span></div>
+          <div class="pill">GPS: <span id="gps">$0/s</span></div>
+          <div class="pill">Year: <span id="yearStat">1970</span></div>
+          <div class="pill">Prestige: <span id="prestigeStat">x1.00</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="production" aria-selected="true">Production</button>
+        <button class="tab" data-tab="upgrades" aria-selected="false">Upgrades</button>
+        <button class="tab" data-tab="achievements" aria-selected="false">Achievements</button>
+        <button class="tab" data-tab="settings" aria-selected="false">Settings</button>
+      </nav>
+
+      <section id="view-production" class="view active" role="tabpanel">
+        <div class="panel">
+          <h2>Develop</h2>
+          <p>Click to invest in your economy. Click power scales with GPS.</p>
+          <button id="developBtn" class="btn primary">Develop (+<span id="clickPower">1</span>)</button>
+        </div>
+        <div class="panel">
+          <h2>Industries</h2>
+          <div id="industries" class="grid industries"></div>
+        </div>
+      </section>
+
+      <section id="view-upgrades" class="view" role="tabpanel">
+        <div class="panel">
+          <h2>Available Upgrades</h2>
+          <p class="note">Industry milestones (10/25/50/100 owned) unlock strong upgrades.</p>
+          <div id="upgrades" class="list"></div>
+        </div>
+      </section>
+
+      <section id="view-achievements" class="view" role="tabpanel">
+        <div class="panel">
+          <h2>Achievements</h2>
+          <div id="achievements" class="list"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view" role="tabpanel">
+        <div class="panel">
+          <h2>Settings</h2>
+          <div class="row">
+            <button id="saveBtn" class="btn">Save Now</button>
+            <button id="exportBtn" class="btn">Export Save</button>
+            <label class="import">
+              <input id="importInput" type="text" placeholder="Paste save string" />
+              <button id="importBtn" class="btn">Import</button>
+            </label>
+            <button id="resetBtn" class="btn danger">Hard Reset</button>
+          </div>
+          <div id="saveNote" class="note"></div>
+        </div>
+        <div class="panel">
+          <h2>Manual</h2>
+          <ul>
+            <li>Choose a nation to gain unique bonuses.</li>
+            <li>Click Develop to earn GDP; buy industries to automate income.</li>
+            <li>Milestones at 10/25/50/100 unlock industry upgrades.</li>
+            <li>The calendar advances from 1970 to 2020; at 2020 the run ends.</li>
+            <li>Prestige to gain influence points for permanent bonuses.</li>
+            <li>Random events can help or hinder production temporarily.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h2>Prestige</h2>
+          <div class="row">
+            <div>Influence: <strong id="prestigePoints">0</strong></div>
+            <div>Multiplier: <strong id="prestigeMult">x1.00</strong></div>
+            <div>Earn on reset: <strong id="prestigeGain">0</strong></div>
+            <button id="prestigeBtn" class="btn">Prestige (Reset for Multiplier)</button>
+          </div>
+          <h3>Prestige Shop</h3>
+          <p class="note">Spend influence on permanent upgrades that carry over between runs.</p>
+          <div id="prestigeShop" class="list"></div>
+        </div>
+        <div class="panel">
+          <h2>Debug</h2>
+          <label><input type="checkbox" id="debugToggle" /> Enable Debug</label>
+          <div id="debugTools" class="row" style="display:none">
+            <button id="dbgAddMoney" class="btn">+ $1,000,000</button>
+            <button id="dbgAdvanceYear" class="btn">+1 Year</button>
+            <button id="dbgTriggerEvent" class="btn">Trigger Event</button>
+            <button id="dbgUnlockUpgrades" class="btn">Unlock Upgrades</button>
+            <button id="dbgFast10s" class="btn">Fast-forward 10s</button>
+          </div>
+          <pre id="debugInfo" class="small" style="display:none"></pre>
+        </div>
+      </section>
+    </main>
+
+    <div id="countryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="countryTitle" style="display:none">
+      <div class="modal-content">
+        <h2 id="countryTitle">Choose Your Nation</h2>
+        <p>Select one of the top 10 economies. Each has unique strengths.</p>
+        <div id="countryGrid" class="grid countries"></div>
+      </div>
+    </div>
+
+    <div id="eventBanner" class="modal" aria-live="polite" style="display:none">
+      <div class="modal-content">
+        <h2 id="eventTitle">Event</h2>
+        <p id="eventDesc"></p>
+        <p class="small">Ends in <span id="eventTimer">0</span>s</p>
+        <div class="row">
+          <button id="eventClose" class="btn">Close</button>
+          <button id="eventPrestigeNow" class="btn primary" style="display:none">Prestige Now</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container small">&copy; <span id="year">2025</span> Nation Incremental</div>
+    </footer>
+
+    <script src="game.js"></script>
+  </body>
+  </html>
+
