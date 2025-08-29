@@ -73,6 +73,7 @@ body.is-mobile main{padding-bottom:90px}
 body.is-mobile .btn{padding:.7rem 1rem; font-size:1rem}
 body.is-mobile .industry .actions .btn{padding:.6rem .9rem}
 body.is-mobile .topbar .stats{gap:.35rem}
+body.is-mobile #developBtn{display:none}
 
 .fab{position:fixed; right:16px; bottom:64px; z-index:25; display:none; border:none; background:#1f7ae0; color:#fff; padding:.9rem 1.1rem; border-radius:999px; box-shadow:0 10px 30px rgba(0,0,0,.2); font-weight:700; cursor:pointer}
 .fab:active{transform:translateY(1px)}

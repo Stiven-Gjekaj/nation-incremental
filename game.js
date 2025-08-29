@@ -444,6 +444,11 @@ setInterval(saveGame, 10000);
     const isSmall = window.innerWidth <= 820;
     const isMobileUA = /(Android|iPhone|iPad|iPod|Mobile|Windows Phone)/i.test(ua);
     const isMobile = isTouch || isSmall || isMobileUA;
-    if (isMobile) document.body.classList.add('is-mobile');
+    if (isMobile) {
+      document.body.classList.add('is-mobile');
+      // Hide/remove the old develop button to avoid clutter on mobile
+      const oldBtn = document.getElementById('developBtn');
+      if (oldBtn) oldBtn.style.display = 'none';
+    }
   }catch{}
 })();
