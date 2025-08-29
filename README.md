@@ -14,11 +14,6 @@ A lightweight, vanilla JavaScript incremental game. Choose a top economy, build 
 - LocalStorage save system with offline progress
 - Responsive layout and accessible semantics
 
-## Deploy
-
-- Serve the `nation-incremental` folder as static files (e.g., GitHub Pages, Netlify, Vercel static).
-- Entry file: `index.html`.
-
 ## Notes
 
 - Achievements grant +1% global GPS each.
